@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/tarcisio/infergo"
@@ -19,22 +20,23 @@ func NewService(engine *infergo.Engine[*example.Payload]) *Service {
 func (service *Service) ExecuteHandler(w http.ResponseWriter, r *http.Request) {
 	var payload example.Payload
 
-	err := json.NewDecoder(r.Body).Decode(&payload)
-	if err != nil {
+	// 1. Decode the input payload
+	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		http.Error(w, "Invalid input", http.StatusBadRequest)
 		return
 	}
 
-	// Execute the rule engine
-	err = service.engine.Execute(&payload)
-	if err != nil {
+	// 2. Execute the rule engine
+	if err := service.engine.Execute(&payload); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	// Return the modified payload as JSON response
+	// 3. Return the modified payload as JSON response
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(payload)
+	if err := json.NewEncoder(w).Encode(payload); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func main() {
@@ -45,5 +47,9 @@ func main() {
 	svc := NewService(eng)
 
 	http.HandleFunc("POST /execute", svc.ExecuteHandler)
-	http.ListenAndServe(":8181", nil)
+
+	err := http.ListenAndServe(":8181", nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
