@@ -1,6 +1,6 @@
 # Infergo - A Simple Rule Engine in Go
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/tarcisio/infergo)](https://goreportcard.com/report/github.com/yourusername/infergo)
+[![Go Report Card](https://goreportcard.com/badge/github.com/tarcisio/infergo)](https://goreportcard.com/report/github.com/tarcisio/infergo)
 [![Build Status](https://github.com/tarcisio/infergo/actions/workflows/go-ci.yml/badge.svg)](https://github.com/tarcisio/infergo/actions)
 
 Infergo is a generic rule engine written in Go.
